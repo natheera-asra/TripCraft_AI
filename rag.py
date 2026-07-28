@@ -7,10 +7,22 @@ from langchain_chroma import Chroma
 import os
 
 
-DATA_PATH = "data/TRIPCRAFT-DATA"
+# Get project directory
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+DATA_PATH = os.path.join(
+    BASE_DIR,
+    "data",
+    "TRIPCRAFT-DATA"
+)
 
 
 def create_retriever():
+
+    print("Current directory:", os.getcwd())
+    print("PDF path:", DATA_PATH)
+    print("Path exists:", os.path.exists(DATA_PATH))
+
 
     print("Loading PDFs...")
 

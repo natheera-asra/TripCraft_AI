@@ -216,6 +216,22 @@ requirements.txt
 
 ---
 
+
+
+---
+
+## Model Selection Strategy
+
+TripCraft AI uses different Large Language Models for different tasks instead of using one model for the complete workflow. This improves efficiency by selecting suitable models based on the complexity of each task.
+
+| Sub-task | Model (Provider) | Reason for Selection |
+|---|---|---|
+| User request routing | Llama-3.1-8B-Instant (Groq) | A lightweight and fast model suitable for routing decisions with low latency. |
+| Travel plan generation | Llama-3.3-70B-Versatile (Groq) | A powerful model selected for complex reasoning and generating detailed travel itineraries. |
+| Travel plan review | Llama-3.1-8B-Instant (Groq) | Provides faster response checking and improves the generated travel plan efficiently. |
+
+This model selection approach balances response quality, speed, and computational efficiency.
+
 ## Running the Application
 
 Install dependencies:

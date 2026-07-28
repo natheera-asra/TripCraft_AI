@@ -7,7 +7,7 @@ from langchain_chroma import Chroma
 import os
 
 
-DATA_PATH = "/content/drive/MyDrive/TripCraft_AI/data/TRIPCRAFT-DATA"
+DATA_PATH = "data/TRIPCRAFT-DATA"
 
 
 def create_retriever():
@@ -47,7 +47,7 @@ def create_retriever():
     vector_db = Chroma.from_documents(
         documents=chunks,
         embedding=embeddings,
-        persist_directory="/content/chroma_db"
+        persist_directory="chroma_db"
     )
 
 

@@ -2,23 +2,23 @@
 
 ## Project Description
 
-TripCraft AI is an AI-based travel planning application developed to help users create personalized travel plans for Sri Lankan destinations.
+TripCraft AI is an AI-powered travel planning application developed to help users create personalized travel plans for Sri Lankan destinations.
 
-Planning a trip usually requires searching different websites for places to visit, hotels, transport options, food, and safety information. This can take a lot of time.
+Planning a trip usually requires searching multiple websites for attractions, hotels, transportation, food recommendations, and travel information. This process can be time-consuming because travel information is distributed across different sources.
 
-This project provides an intelligent travel assistant where users can enter their travel requirements and receive a generated travel plan with recommended places, activities, and travel suggestions.
+TripCraft AI provides an intelligent travel assistant where users can enter their travel requirements and receive a generated travel itinerary using Agentic AI, Retrieval-Augmented Generation (RAG), LangGraph, and Large Language Models (LLMs).
 
-The system uses Agentic AI, LangGraph, Retrieval-Augmented Generation (RAG), and Large Language Models (LLMs) to create useful and context-aware travel recommendations.
+The system retrieves information from a Sri Lankan tourism knowledge base and uses multiple AI agents to generate structured travel recommendations.
 
 ---
 
 # Problem Statement
 
-When planning a trip, travelers need to collect information from multiple sources and manually organize their itinerary.
+Travelers often need to collect information from different sources and manually organize their travel plans.
 
-This process can be difficult because information about destinations, attractions, transportation, and other travel details are available in different places.
+Finding suitable attractions, transportation options, accommodation information, and travel guidance for a destination requires significant time and effort.
 
-TripCraft AI solves this problem by providing an AI assistant that retrieves information from a Sri Lanka tourism knowledge base and creates a customized travel plan automatically.
+TripCraft AI addresses this problem by retrieving relevant information from tourism documents and automatically generating personalized travel itineraries.
 
 ---
 
@@ -26,12 +26,12 @@ TripCraft AI solves this problem by providing an AI assistant that retrieves inf
 
 The main objectives of this project are:
 
-- Develop an AI-powered travel planning assistant.
+- Develop an AI-based travel planning assistant.
 - Generate personalized travel itineraries.
-- Use tourism documents as a reliable information source.
+- Use tourism documents as a reliable knowledge source.
 - Implement Retrieval-Augmented Generation (RAG).
-- Apply multiple AI agents for different travel tasks.
-- Improve responses using reflection-based checking.
+- Apply multiple AI agents using LangGraph.
+- Improve generated responses using a reflection-based checking process.
 - Provide a simple and user-friendly Streamlit interface.
 
 ---
@@ -40,155 +40,124 @@ The main objectives of this project are:
 
 The overall architecture of TripCraft AI is shown below:
 
-```
-                    User
-                     |
-                     ↓
-            Streamlit Interface
-                     |
-                     ↓
-              Router Agent
-                     |
-                     ↓
-            LangGraph Workflow
-                     |
-        --------------------------------
-        |              |               |
-        ↓              ↓               ↓
-    RAG Agent     Planner Agent   Budget Agent
-        |
-        ↓
-Sri Lanka Tourism
- Knowledge Base
+<p align="center">
+<img src="assets/SystemArchitecture.png" width="850">
+</p>
 
-                     |
-                     ↓
-            Attraction Agent
-                     |
-                     ↓
-             Weather Agent
-                     |
-                     ↓
-           Reflection Agent
-                     |
-                     ↓
-             Final Travel Plan
-```
+The system receives user requests through the Streamlit interface.
 
-LangGraph is used to control the communication and execution flow between different AI agents.
+LangGraph manages the workflow and coordinates communication between AI agents, the RAG pipeline, and Large Language Models.
+
+---
+
+# Agent Workflow
+
+The communication flow between TripCraft AI agents is shown below:
+
+<p align="center">
+<img src="assets/Agent.png" width="500">
+</p>
+
+The workflow consists of:
+
+- Router Agent
+- RAG Agent
+- Planner Agent
+- Reflection Agent
+
+LangGraph controls the execution order and manages information flow between these agents.
 
 ---
 
 # AI Agents
 
-## Router Agent
+## 1. Router Agent
 
-The Router Agent receives the user request and decides which agents are required to process the query.
+The Router Agent receives the user's travel request and identifies the required travel planning task.
 
----
+It helps determine the appropriate workflow for processing user queries.
 
-## RAG Agent
+Implemented in:
 
-The RAG Agent searches the tourism knowledge base and retrieves relevant information related to the user's request.
-
----
-
-## Planner Agent
-
-The Planner Agent creates the main travel itinerary using:
-
-- User requirements
-- Retrieved information
-- Travel details
+```
+agents.py
+```
 
 ---
 
-## Budget Agent
+## 2. RAG Agent
 
-The Budget Agent provides suggestions based on the user's travel budget.
+The RAG Agent retrieves relevant information from the Sri Lankan tourism knowledge base.
 
----
+It uses ChromaDB similarity search to find useful document sections related to the user's request.
 
-## Attraction Agent
+Implemented in:
 
-The Attraction Agent identifies suitable attractions, activities, and places to visit.
-
----
-
-## Weather Agent
-
-The Weather Agent considers available weather information during travel planning.
+```
+agents.py
+```
 
 ---
 
-## Reflection Agent
+## 3. Planner Agent
+
+The Planner Agent generates the main travel itinerary using:
+
+- User travel requirements
+- Retrieved tourism information
+- Available destination knowledge
+
+The agent creates structured travel plans including:
+
+- Places to visit
+- Suggested activities
+- Travel recommendations
+- Day-wise schedules
+
+Implemented in:
+
+```
+agents.py
+```
+
+---
+
+## 4. Reflection Agent
 
 The Reflection Agent reviews the generated travel plan and improves:
 
 - Organization
-- Completeness
 - Readability
+- Completeness
 - Travel suitability
 
----
+This step improves the quality of the final response.
 
-# Agent Communication Flow
+Implemented in:
 
 ```
-User Request
-      |
-      ↓
-Router Agent
-      |
-      ↓
-RAG Agent
-      |
-      ↓
-Planner Agent
-      |
-      ↓
-Budget Agent + Attraction Agent + Weather Agent
-      |
-      ↓
-Reflection Agent
-      |
-      ↓
-Final Travel Plan
+agents.py
 ```
-
-Agents communicate through the shared workflow state managed by LangGraph.
 
 ---
 
 # Agentic AI Design Patterns Used
 
-## 1. Planning Pattern
+## Planning Pattern
 
-The Planner Agent uses the planning pattern to break down the user's travel requirements and create a structured itinerary.
-
-Implemented in:
-
-```
-agents.py
-```
+The Planner Agent follows the planning pattern by converting user requirements into a structured travel itinerary.
 
 ---
 
-## 2. Reflection Pattern
+## Reflection Pattern
 
-The Reflection Agent checks the generated travel plan and improves the quality of the final response.
-
-Implemented in:
-
-```
-agents.py
-```
+The Reflection Agent reviews and improves the generated travel plan before presenting the final output.
 
 ---
 
-## 3. Router / Orchestrator Pattern
+## Router / Orchestrator Pattern
 
-LangGraph works as an orchestrator that controls the order of agent execution and manages communication between agents.
+LangGraph acts as the workflow controller by managing communication and execution between different agents.
 
 Implemented in:
 
@@ -200,63 +169,56 @@ graph.py
 
 # Model Selection Strategy
 
-Different models are selected for different tasks instead of using one model for everything.
+Different Large Language Models are selected for different tasks.
 
 | Task | Model | Reason |
 |---|---|---|
-| Query Routing | Llama-3.1-8B-Instant (Groq) | Fast and suitable for simple routing decisions |
-| Travel Plan Generation | Llama-3.3-70B-Versatile (Groq) | Better reasoning for creating detailed travel plans |
-| Plan Review | Llama-3.1-8B-Instant (Groq) | Faster checking and improvement |
+| Query Routing | Llama-3.1-8B-Instant (Groq) | Fast decision making |
+| Travel Plan Generation | Llama-3.3-70B-Versatile (Groq) | Better reasoning and detailed generation |
+| Plan Reflection | Llama-3.1-8B-Instant (Groq) | Efficient response checking |
 
-This approach improves the balance between:
+This approach balances:
 
 - Response quality
-- Speed
-- Efficiency
+- Processing speed
+- Computational efficiency
 
 ---
 
 # Retrieval-Augmented Generation (RAG)
 
-TripCraft AI uses a Sri Lanka tourism knowledge base for retrieving travel-related information.
+TripCraft AI uses a Sri Lankan tourism knowledge base containing travel-related documents.
 
-The knowledge base contains:
+The knowledge base includes:
 
 - Destination guides
 - Tourist attractions
 - Hotels
-- Transportation details
-- Food information
-- Safety tips
+- Transportation information
+- Food guides
+- Hiking locations
+- Wildlife information
+- Safety recommendations
 
 ---
 
 # RAG Pipeline
 
-```
-Tourism PDF Documents
-          |
-          ↓
-Document Loading
-          |
-          ↓
-Text Splitting
-          |
-          ↓
-Embedding Generation
-          |
-          ↓
-Chroma Vector Database
-          |
-          ↓
-Similarity Search
-          |
-          ↓
-Relevant Context Retrieval
-          |
-          ↓
-LLM Response Generation
-```
+The Retrieval-Augmented Generation pipeline used in TripCraft AI is shown below:
+
+<p align="center">
+<img src="assets/RAG.png" width="500">
+</p>
+
+The RAG pipeline performs:
+
+- Document loading
+- Text processing
+- Text chunking
+- Embedding generation
+- Vector storage
+- Similarity retrieval
+- Context generation for AI agents
 
 ---
 
@@ -264,50 +226,121 @@ LLM Response Generation
 
 ## Document Collection
 
-```
-73 PDF documents
-```
+The system uses a Sri Lankan tourism knowledge base containing PDF documents.
+
+The dataset contains information about:
+
+- Popular destinations
+- Attractions
+- Hotels
+- Transport routes
+- Food recommendations
+- Travel guidance
+
+---
 
 ## Text Chunking
 
-The documents are divided into smaller text sections to improve retrieval.
+Documents are divided into smaller sections to improve retrieval performance.
+
+Configuration:
 
 ```
 Chunk Size: 800
 Chunk Overlap: 150
 ```
 
+---
+
 ## Embedding Model
+
+The system uses:
 
 ```
 sentence-transformers/all-MiniLM-L6-v2
 ```
 
+for generating document embeddings.
+
+---
+
 ## Vector Database
+
+The vector database used is:
 
 ```
 ChromaDB
 ```
 
+ChromaDB stores document embeddings and performs semantic similarity search.
+
 ---
 
-# Retrieval Evaluation
+# Application Testing
 
-The retrieval system was tested using five sample travel queries.
+The application was tested using different travel requests.
 
-| Query | Retrieved Information | Result |
-|---|---|---|
-| Kandy visiting places | Kandy Travel Guide, Temple of the Tooth, Kandy Lake | Relevant |
-| Galle attractions | Galle itinerary and attraction information | Relevant |
-| Colombo city tour | Colombo city tour information | Relevant |
-| Trincomalee beaches | Nilaveli Beach and Trincomalee information | Relevant |
-| Ella hiking places | Retrieved unrelated Galle/Mirissa information | Not Relevant |
+---
 
-## Evaluation Result
+## Test Case 1: Kandy 2 Day Travel Plan
 
-The system retrieved relevant information for 4 out of 5 test queries.
+User Input:
 
-The incorrect result shows that retrieval performance can be improved by adding more destination-specific documents and increasing the knowledge base.
+```
+Create a 2 day travel plan for Kandy
+```
+
+Generated output includes:
+
+```
+Day 1:
+- Cultural attractions
+- Historical locations
+- Local experiences
+
+Day 2:
+- Additional sightseeing locations
+- Food recommendations
+- Travel suggestions
+```
+
+---
+
+## Test Case 2: Sigiriya Day Trip
+
+User Input:
+
+```
+Plan a Sigiriya day trip
+```
+
+Generated output includes:
+
+```
+- Sigiriya Rock Fortress information
+- Nearby attractions
+- Suggested visiting schedule
+- Travel recommendations
+```
+
+---
+
+## Test Case 3: Ella Travel Plan
+
+User Input:
+
+```
+Give me a 3 day Ella itinerary
+```
+
+Generated output includes:
+
+```
+- Hiking locations
+- Scenic attractions
+- Local experiences
+- Suggested activities
+```
 
 ---
 
@@ -317,16 +350,16 @@ TripCraft AI provides a web interface developed using Streamlit.
 
 Users can:
 
-- Enter their travel requirements.
+- Enter travel requests.
 - Generate AI travel plans.
-- View organized travel recommendations.
+- View structured itineraries.
 
-## Main Features
+Main features:
 
-- 🌴 Travel assistant interface
+- 🌴 AI travel assistant
 - ✈️ Travel request input
-- 🤖 AI-generated itinerary
-- 📋 Structured travel recommendations
+- 🤖 Agent-based planning
+- 📋 Automated itinerary generation
 
 ---
 
@@ -334,7 +367,9 @@ Users can:
 
 Streamlit Community Cloud:
 
+```
 https://tripcraftai-uwvlqvtzqnnttdvebknjjd.streamlit.app/
+```
 
 ---
 
@@ -345,7 +380,7 @@ TripCraft_AI/
 
 │
 ├── app.py
-│     Streamlit application interface
+│     Streamlit application
 │
 ├── agents.py
 │     AI agent implementation
@@ -354,16 +389,18 @@ TripCraft_AI/
 │     LangGraph workflow
 │
 ├── rag.py
-│     RAG pipeline and retrieval system
-│
-├── data/
-│     Sri Lanka tourism PDF documents
+│     RAG pipeline
 │
 ├── assets/
-│     Application images
+│     ├── SystemArchitecture.png
+│     ├── Agent.png
+│     └── RAG.png
+│
+├── data/
+│     Tourism PDF documents
 │
 └── requirements.txt
-      Required Python libraries
+      Required libraries
 ```
 
 ---
@@ -371,14 +408,14 @@ TripCraft_AI/
 # Technologies Used
 
 - Python
+- Streamlit
 - LangChain
 - LangGraph
 - Groq API
 - Llama Models
 - HuggingFace Embeddings
 - ChromaDB
-- Streamlit
-- Retrieval-Augmented Generation
+- Retrieval-Augmented Generation (RAG)
 
 ---
 
@@ -402,9 +439,9 @@ cd TripCraft_AI
 pip install -r requirements.txt
 ```
 
-## Add API Key
+## Configure API Key
 
-Set the Groq API key:
+Create an environment variable:
 
 ```bash
 export GROQ_API_KEY="your_api_key"
@@ -420,10 +457,14 @@ streamlit run app.py
 
 # Limitations
 
-- The system depends on the available tourism documents.
-- Real-time hotel booking is not available.
-- Live weather API integration is not included.
-- Information quality depends on the knowledge base.
+- The system supports only Sri Lankan destinations available in the uploaded tourism knowledge base.
+- It does not retrieve live information from external websites.
+- Real-time weather information is not included.
+- Hotel booking and transport booking features are not available.
+- The quality of generated plans depends on the available tourism documents.
+- Retrieval is based on semantic similarity, so queries with limited context may sometimes retrieve less relevant information.
+- For example, a Sigiriya query may retrieve information from another destination if similar descriptions exist in the knowledge base.
+- Metadata-based filtering can be added in future versions to improve destination accuracy.
 
 ---
 
@@ -434,9 +475,11 @@ Future improvements include:
 - Adding real-time weather APIs.
 - Integrating hotel booking services.
 - Adding transport APIs.
+- Expanding the tourism knowledge base.
 - Supporting multiple languages.
 - Developing a mobile application.
-- Improving personalized recommendations.
+- Improving destination-based retrieval accuracy.
+- Adding user preference learning.
 
 ---
 
@@ -452,8 +495,8 @@ Project:
 
 # Conclusion
 
-TripCraft AI demonstrates how Agentic AI can be used for real-world travel planning.
+TripCraft AI demonstrates how Agentic AI and Retrieval-Augmented Generation can be applied to intelligent travel planning.
 
-By combining multiple AI agents, RAG-based retrieval, vector databases, and Large Language Models, the system can generate personalized travel recommendations from a tourism knowledge base.
+By combining AI agents, LangGraph workflow management, vector databases, embeddings, and Large Language Models, the system generates personalized travel recommendations from a Sri Lankan tourism knowledge base.
 
-The project shows how AI can reduce the effort required for travel planning and provide useful recommendations for users.
+Although the current system is limited to information available in the document collection, it provides a foundation for developing advanced AI-powered travel assistants.

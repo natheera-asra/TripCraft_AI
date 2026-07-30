@@ -12,6 +12,14 @@ The system retrieves information from a Sri Lankan tourism knowledge base and us
 
 ---
 
+# 🚀 Live Demo
+
+Try the deployed TripCraft AI application:
+
+🔗 Streamlit App:
+https://tripcraftai-uwvlqvtzqnnttdvebknjjd.streamlit.app/
+
+
 # Problem Statement
 
 Travelers often need to collect information from different sources and manually organize their travel plans.
